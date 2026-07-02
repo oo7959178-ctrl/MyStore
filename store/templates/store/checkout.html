@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الطلب -  CREST</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh; background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%); background-size: cover; background-attachment: fixed; color: white; }
+        .checkout-container { max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        .btn-complete {
+            display: none; /* مخفي افتراضياً */
+            background-color: transparent;
+            color: #d946ef;
+            border: 2px solid #d946ef;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 10px #d946ef;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-complete:hover {
+            background-color: #d946ef;
+            color: white;
+            box-shadow: 0 0 25px #d946ef;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+    <a href="/" class="btn-home">← العودة للرئيسية</a>
+    
+    <h2 style="text-align: center; margin-top: 0;">إتمام عملية الدفع</h2>
+    
+    </div>
+    
+
+    <div id="payment-form">
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+            <p style="margin-top: 0;">اختر وسيلة الدفع:</p>
+            
+            <label style="display: block; margin-bottom: 10px; cursor: pointer;">
+                <input type="radio" name="payment_method" value="stripe"> 
+                بطاقة عالمية (Visa / MasterCard)
+            </label>
+            
+            <label style="display: block; margin-bottom: 10px; cursor: pointer;">
+                <input type="radio" name="payment_method" value="ccp"> 
+                البطاقة الذهبية (CCP)
+            </label>
+
+            <label style="display: block; margin-bottom: 30px; cursor: pointer;">
+                <input type="radio" name="payment_method" value="cod"> 
+                الدفع عند الاستلام
+            </label>
+
+            <button type="button" class="btn-complete" id="submit-btn">
+                إتمام الطلب 🛒
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const submitBtn = document.getElementById('submit-btn');
+    const radioButtons = document.querySelectorAll('input[name="payment_method"]');
+    const stripe = Stripe('pk_test_51TmWq8LMyx04TkRfznukmJhXxMfC5EIUS1d1yg0xfh3qKMxVWj87Zzj0w0KlsK0rjH6fO6j9TrtjjsxH0GDB0xaN00Vi0ayphi'); 
+
+    // إظهار الزر عند اختيار وسيلة دفع
+    radioButtons.forEach((radio) => {
+        radio.addEventListener('change', function() {
+            submitBtn.style.display = 'block';
+        });
+    });
+
+    // المنطق عند الضغط على الزر
+    submitBtn.addEventListener('click', function () {
+        const selectedRadio = document.querySelector('input[name="payment_method"]:checked');
+        if (!selectedRadio) return;
+        
+        const selectedMethod = selectedRadio.value;
+
+        if (selectedMethod === 'stripe') {
+            fetch('/process-payment/', { 
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                body: new URLSearchParams({ 'payment_method': 'stripe' })
+            })
+            .then(res => res.json())
+            .then(data => data.id ? stripe.redirectToCheckout({ sessionId: data.id }) : alert('Error: ' + data.error));
+        } 
+        else if (selectedMethod === 'ccp') {
+            window.location.href = '/payment-ccp/';
+        } 
+        else if (selectedMethod === 'cod') {
+            fetch('/checkout/cod/', { 
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                body: new URLSearchParams({ 'payment_method': 'cod' })
+            })
+            .then(res => {
+                if (res.redirected) window.location.href = res.url;
+                else alert('قيد المراجعة!');
+            });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% load i18n %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجري الإلكتروني - CREST</title>
+    <style>
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(135deg, #0b071e 0%, #160d33 100%);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader-ring {
+            width: 60px; height: 60px; border: 4px solid rgba(255, 255, 255, 0.05); border-radius: 50%;
+            border-top-color: #06b6d4; border-bottom-color: #d946ef;
+            animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; margin: 0 auto 25px;
+        }
+        .loader-title { color: #ffffff; font-size: 26px; font-weight: bold; text-align:center; }
+        #preloader.fade-out { opacity: 0; visibility: hidden; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        body {
+            font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh;
+            background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%);
+            background-size: cover; background-attachment: fixed; display: flex; flex-direction: column;
+            color: white;
+        }
+
+        .navbar {
+            position: sticky; top: 15px; background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px;
+            border-radius: 16px; display: flex; justify-content: space-between;
+            align-items: center; 
+            max-width: 1400px;
+            margin: 0 auto 40px; width: 100%; box-sizing: border-box; z-index: 100;
+        }
+        .navbar-brand {
+            font-size: 24px; font-weight: bold; text-decoration: none;
+            background: linear-gradient(45deg, #06b6d4, #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 16px; }
+
+        .products-container { 
+           display: grid; 
+           grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+           gap: 25px; 
+           max-width: 1400px;
+           margin: 0 auto; 
+           width: 100%; 
+           flex: 1; 
+         }
+        .product-card { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); text-align: center; transition: transform 0.3s; height: fit-content; }
+        .product-card:hover { transform: translateY(-8px); }
+        .product-image-area { width: 100%; height: 180px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255, 255, 255, 0.05); }
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .product-title { font-size: 22px; font-weight: bold; margin-bottom: 12px; color: #ffffff; }
+        .product-price { color: #06b6d4; font-size: 20px; font-weight: bold; margin-bottom: 25px; }
+        
+        .btn-group { display: flex; gap: 10px; }
+        .btn-buy { background: linear-gradient(90deg, #7c3aed, #4f46e5); color: white; border: none; padding: 8px; border-radius: 10px; cursor: pointer; flex: 1; font-size: 14px; font-weight: bold; transition: all 0.3s; text-decoration: none; text-align: center; line-height: 1.2; }
+        .btn-buy:hover { background: linear-gradient(90deg, #9061f9, #6366f1); transform: scale(1.02); }
+        .btn-details { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px; border-radius: 10px; cursor: pointer; flex: 1; font-size: 14px; text-decoration: none; display: inline-block; transition: background 0.3s; line-height: 1.2; }
+        .btn-details:hover { background: rgba(255, 255, 255, 0.2); }
+
+        footer { margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding: 25px; text-align: center; font-size: 14px; color: rgba(255,255,255,0.5); }
+        footer a { color: #06b6d4; text-decoration: none; margin: 0 10px; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ==================== ألوان الوضع المضيء المطور ==================== */
+        body.light-mode {
+            background-image: radial-gradient(at 80% 20%, rgba(6, 182, 212, 0.1) 0px, transparent 50%), radial-gradient(at 20% 80%, rgba(217, 70, 239, 0.1) 0px, transparent 50%), linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #1e293b;
+        }
+        body.light-mode .navbar {
+            background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        body.light-mode .navbar-brand { background: linear-gradient(45deg, #0891b2, #c026d3); -webkit-background-clip: text; }
+        body.light-mode .nav-links a { color: #334155; }
+        body.light-mode #theme-toggle { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #334155; }
+        body.light-mode .product-card {
+            background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.06); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .product-title { color: #0f172a; }
+        body.light-mode .product-price { color: #0891b2; }
+        body.light-mode .btn-details { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+        body.light-mode .btn-details:hover { background: #e2e8f0; }
+        body.light-mode .search-input { background: #ffffff !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; }
+        body.light-mode .search-input::placeholder { color: #94a3b8 !important; }
+        body.light-mode footer { color: #64748b; border-top-color: rgba(0,0,0,0.08); }
+
+        @media (max-width: 600px) {
+            h1, h2 { font-size: 1.5rem !important; } /* تم تصحيح الفاصلة إلى نقطة هنا */
+            input[type="text"], button {
+                padding: 10px !important;
+                font-size: 20px !important;
+            }
+            .container, .header, nav {
+                width: 100% !important;
+                margin: 0 auto !important;
+                padding: 5px !important;
+            }
+        }
+
+        /* تنسيق اسم المستخدم كزر */
+        .username-text {
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .username-text:hover { background: rgba(255, 255, 255, 0.1); }
+
+        /* تنسيق القائمة المنسدلة */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background-color: #1a1a2e;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.4);
+            border-radius: 10px;
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+        .dropdown-content a:hover { background-color: #06b6d4; }
+        .show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="loader-content"><div class="loader-ring"></div><div class="loader-title">مرحباً بك في متجرنا الرقمي</div></div>
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="navbar-brand" style="color: #000000; text-shadow: 0 0 0px #6c0d7a, 0 0 0px #6a007a; text-decoration: none; font-weight: bold; font-size: 24px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; font-family: 'Arial', sans-serif;">
+            <span>🦚</span> <span>CREST</span>
+        </a>
+        <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
+        
+            <button id="theme-toggle" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 16px; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                🌙
+            </button>
+
+            <a href="{% url 'cart_detail' %}" style="background: rgba(6, 182, 212, 0.15); border: 1px solid #06b6d4; padding: 8px 16px; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 8px; color: #06b6d4; font-weight: bold;">
+                🛒 السلة 
+            
+                <span style="background: #d946ef; color: white; border-radius: 50%; padding: 2px 8px; font-size: 13px;">
+                
+                    {{ request.session.cart.keys|length|default:0 }}
+                </span>
+                <a href="{% url 'my_orders' %}">طلباتي</a>
+            </a>
+
+         {% if user.is_authenticated %}
+    <div style="position: relative; display: inline-block;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="username-text" onclick="toggleMenu()" style="color: white; font-weight: bold; cursor: pointer; padding: 10px;">
+                {{ user.username }} ▾
+            </span>
+        </div>
+
+        <div id="userDropdown" class="dropdown-content">
+            <a href="{% url 'profile' %}">عرض الملف الشخصي</a>
+           
+            
+            <div style="padding: 10px 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p style="color: #06b6d4; font-size: 18px; margin: 0 0 5px 0;">تغيير اللغة:</p>
+                <form action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+    
+    <input type="hidden" name="language" id="lang-input" value="">
+    
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_available_languages as LANGUAGES %}
+    
+    {% for lang in LANGUAGES %}
+        <button type="submit" 
+                onclick="document.getElementById('lang-input').value='{{ lang.0 }}';"
+                style="display:block; width:100%; background:none; border:none; color:white; text-align:right; padding:5px 0; cursor:pointer; {% if lang.0 == LANGUAGE_CODE %}color:#06b6d4; font-weight:bold;{% endif %}">
+            {{ lang.1 }}
+        </button>
+    {% endfor %}
+</form>
+            </div>
+
+            <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: #ff4757; padding: 12px 15px; width: 100%; text-align: right; font-size: 14px; cursor: pointer;">
+                    🚪 تسجيل الخروج
+                </button>
+            </form>
+        </div> 
+    </div>
+{% else %}
+    <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 14px;">تسجيل الدخول</a>
+    <a href="{% url 'register' %}" style="color: #0b82f1; text-decoration: none; font-size: 14px;">إنشاء حساب</a>
+{% endif %}
+
+        </div>
+    </nav>
+
+    <div style="max-width: 1400px; margin: 0 auto 35px; width: 100%; box-sizing: border-box; padding: 0 10px;">
+        <style>
+            .search-input::placeholder {
+                color: rgba(255, 255, 255, 0.6) !important;
+                font-weight: normal;
+            }
+        </style>
+        
+        <form method="GET" action="{% url 'home' %}" style="display: flex; gap: 12px;">
+           <input
+                type="text" name="search" value="{{ search_query }}" placeholder="  ابحث عن  منتج   ، ..." class="search-input"
+                   style="flex: 1; background: #120c2b; border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px 20px; border-radius: 12px; color: white; font-size: 16px; outline: none; transition: 0.3s; text-align: right;"
+                   onfocus="this.style.borderColor='#06b6d4'; this.style.boxShadow='0 0 15px rgba(6, 182, 212, 0.4)';"
+                   onblur="this.style.borderColor='rgba(255, 255, 255, 0.2)'; this.style.boxShadow='none';">
+            
+            <button type="submit" style="background: linear-gradient(45deg, #06b6d4, #7c3aed); color: white; border: none; padding: 0 30px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s;">
+                بحث
+            </button>
+
+            {% if search_query %}
+                <a href="{% url 'home' %}" style="background: rgba(255, 255, 255, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px 20px; border-radius: 12px; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; transition: 0.3s;">
+                    إلغاء
+                </a>
+            {% endif %}
+        </form>
+        
+        {% if search_query %}
+            <p style="color: rgba(255,255,255,0.6); margin-top: 15px; margin-bottom: 0; font-size: 15px;">
+                نتائج البحث عن: <strong style="color: #d946ef;">"{{ search_query }}"</strong> (وجدنا {{ products|length }} منتج)
+            </p>
+        {% endif %}
+    </div>
+
+    <div style="max-width: 1400px; margin: 0 auto 30px; width: 100%; box-sizing: border-box; padding: 0 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        
+        <a href="{% url 'home' %}" style="padding: 10px 22px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+           {% if not selected_category %} background:linear-gradient(45deg, #06b6d4, #d946ef); color: white; {% else %} background: #120c2b; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15); {% endif %}">
+            الكل
+        </a>
+
+        {% for cat in categories %}
+            <a href="{% url 'home' %}?category={{ cat.id }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+               style="padding: 10px 22px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+               {% if selected_category == cat.id %} background: linear-gradient(45deg, #06b6d4, #d946ef); color: white; box-shadow: 0 0 15px rgba(6,182,212,0.4); {% else %} background: #120c2b; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15); {% endif %}">
+                {{ cat.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <h1 style="text-align: center;">مرحباً بك في متجرنا</h1>
+
+    {% if messages %}
+        <div class="messages" style="margin: 25px 0;">
+            {% for message in messages %}
+                <div style="padding: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="products-container">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="product-image-area">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+                    {% else %}
+                        <div style="color: rgba(255,255,255,0.4)">لا توجد صورة</div>
+                    {% endif %}
+                </div>
+                <div class="product-title">{{ product.name }}</div> 
+                <div class="product-price">{{ product.price }} د.ج</div>
+                <div class="btn-group">
+                    <a href="{% url 'product_detail' product.id %}" class="btn-details">التفاصيل</a>
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn-buy">🛒 إضافة للسلة</a>
+                </div>
+            </div>
+        {% empty %}
+            <div style="text-align: center; grid-column: 1 / -1; color: white; font-size: 18px;">
+                <p>لا توجد منتجات معروضة حالياً.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <footer>
+        <p>© 2026  CREST. جميع الحقوق محفوظة.</p>
+        <p>
+            <a href="{% url 'privacy_policy' %}">سياسة الخصوصية</a> | 
+            <a href="{% url 'terms_of_service' %}">شروط الخدمة</a> | 
+            <a href="{% url 'refund_policy' %}">سياسة الاسترجاع</a>
+        </p>
+    </footer>
+
+    <script>
+        // كود القائمة المنسدلة (Dropdown)
+        function toggleMenu() {
+            const dropdown = document.getElementById("userDropdown");
+            if (dropdown) {
+                dropdown.classList.toggle("show");
+            }
+        }
+
+        // إغلاق القائمة عند الضغط في أي مكان
+        window.onclick = function(event) {
+            if (!event.target.matches('.username-text')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // كود شاشة التحميل (Preloader)
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                setTimeout(() => { preloader.classList.add('fade-out'); }, 800);
+            }
+        });
+
+        // كود التبديل بين الوضعين
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggleBtn.innerText = '☀️';
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                if (document.body.classList.contains('light-mode')) {
+                    localStorage.setItem('theme', 'light');
+                    themeToggleBtn.innerText = '☀️';
+                } else {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggleBtn.innerText = '🌙';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

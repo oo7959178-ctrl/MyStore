@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>الدفع بالبطاقة الذهبية</title>
+    <style>
+        /* 1. تصميم الخلفية بألوان البطاقة الذهبية */
+        body {
+            /* تدرج لوني يبدأ بالأزرق وينتهي بالذهبي */
+            background: linear-gradient(135deg, #0A2463 0%, #247BA0 40%, #D4AF37 70%, #FFD700 100%);
+            background-attachment: fixed; /* لتثبيت الخلفية عند النزول بالصفحة */
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* لجعل الصندوق في وسط الشاشة تماماً */
+        }
+
+        /* 2. تصميم صندوق الدفع (تأثير الزجاج الأنيق) */
+        .payment-box {
+            background-color: rgba(0, 0, 0, 0.4); /* خلفية سوداء شفافة */
+            backdrop-filter: blur(10px); /* تأثير ضبابي للخلفية */
+            border: 1px solid rgba(255, 215, 0, 0.5); /* إطار ذهبي خفيف حول الصندوق */
+            border-radius: 20px; /* حواف دائرية */
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* 3. تصميم الزر */
+        .pay-btn {
+            background-color: #D4AF37; /* لون الزر ذهبي */
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .pay-btn:hover {
+            background-color: #FFD700; /* تفتيح اللون عند تمرير الماوس */
+            transform: scale(1.05); /* تكبير الزر قليلاً */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- صندوق الدفع -->
+    <div class="payment-box">
+        <h2 style="color: #FFD700;">💳 الدفع الآمن</h2>
+        <p>البطاقة الذهبية لبريد الجزائر</p>
+        <hr style="border-color: rgba(255,255,255,0.2); margin-bottom: 20px;">
+        
+        <!-- هنا تضع أكواد فورم الدفع الخاصة بك (رقم البطاقة، تاريخ الانتهاء، الخ) -->
+        <p>... نموذج إدخال بيانات البطاقة هنا ...</p>
+        
+        <button class="pay-btn">تأكيد الدفع</button>
+    </div>
+
+</body>
+</html>

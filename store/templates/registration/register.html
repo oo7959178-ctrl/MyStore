@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh; /* تجعل الصفحة تأخذ طول شاشة الهاتف بالكامل */
+            display: flex;
+            justify-content: center; /* توسيط المحتوى أفقياً */
+            align-items: center; /* توسيط المحتوى عمودياً */
+            /* خلفية متدرجة من أزرق سماوي إلى أخضر */
+            background: linear-gradient(135deg, #87CEEB, #2E8B57);
+            background-attachment: fixed; /* تثبيت الخلفية حتى لو قمت بالسحب */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        form {
+            background: rgba(255, 255, 255, 0.95); /* خلفية بيضاء شفافة قليلاً */
+            padding: 30px;
+            border-radius: 20px;
+            width: 85%; /* عرض مناسب للهواتف */
+            max-width: 400px; /* لا تتوسع أكثر من 400px في الحواسب */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        h2 { color: #333; margin-bottom: 20px; }
+
+        input { 
+            padding: 12px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            width: 100%; 
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* يمنع خروج الحقل عن حدود الفورم */
+        }
+
+        button { 
+            padding: 12px; 
+            background: #2E8B57; /* لون أخضر */
+            border: none; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        button:hover { background: #226b42; }
+    </style>
+</head>
+<body>
+
+    <form method="post">
+        <h2>إنشاء حساب جديد</h2>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">تسجيل</button>
+
+        <p style="margin-top: 20px; color: #555; font-size: 14px;">
+            لديك حساب بالفعل؟ 
+            <a href="{% url 'login' %}" style="color: #2E8B57; text-decoration: none; font-weight: bold;">سجل دخولك من هنا</a>
+        </p>
+    </form>
+
+</body>
+</html>

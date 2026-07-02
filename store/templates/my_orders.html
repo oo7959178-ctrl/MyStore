@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>طلباتي | نيون ستور</title>
+   <style>
+        body { 
+            font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh;
+            background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%);
+            background-attachment: fixed; color: white;
+        }
+        .navbar { 
+            background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); 
+            padding: 20px; border-radius: 16px; margin-bottom: 40px; text-align: center; font-size: 24px; font-weight: bold;
+        }
+        .container { 
+            max-width: 900px; margin: 0 auto; background: rgba(255, 255, 255, 0.07); 
+            padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-sizing: border-box;
+        }
+        /* كود جعل الجدول قابل للسحب على الهواتف */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* سحب سلس على الآيفون */
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 400px; /* يمنع الجدول من الانكماش بشدة */ }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #06b6d4; }
+
+        /* --- كود دعم الهواتف --- */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .navbar { font-size: 18px; padding: 15px; margin-bottom: 20px; }
+            .container { padding: 20px 15px; }
+            h1 { font-size: 22px; }
+            th, td { padding: 10px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">💎 نيون ستور - سجل الطلبات</nav>
+
+    <div class="container">
+        <h1>مرحباً {{ request.user.username }}</h1>
+        <p>هذه قائمة بطلباتك السابقة:</p>
+
+       {% if orders %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.created_at|date:"Y-m-d" }}</td>
+                            <td style="color: #d946ef;">{{ order.status }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div> 
+            {% else %}
+            <div style="text-align: center; padding: 40px;">
+                <p>لا توجد لديك أي طلبات سابقة حتى الآن.</p>
+                <a href="/" style="color: #06b6d4;">العودة للمتجر</a>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

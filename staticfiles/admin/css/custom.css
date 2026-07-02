@@ -1,0 +1,18 @@
+/* إخفاء عنوان إدارة جانغو */
+h1 { display: none !important; }
+
+/* زيادة حجم خط الأدوات */
+#user-tools { font-size: 1.2rem !important; }
+
+/* الخلفية المتموجة */
+body {
+    background: radial-gradient(circle at 20% 0%, #8B5CF6 0%, transparent 60%),
+                radial-gradient(circle at 80% 100%, #06b6d4 0%, transparent 60%),
+                linear-gradient(135deg, #4c1d95 0%, #164e63 100%) !important;
+    background-attachment: fixed !important;
+    color: #fff !important;
+}
+
+/* إصلاح التداخل */
+#container { display: block !important; }
+#content { background: rgba(0,0,0,0.3) !important; border-radius: 10px; }
