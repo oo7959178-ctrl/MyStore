@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Order, Product, Category
 
 # إعداد مفتاح سترايب السري
-stripe.api_key = settings.STRIPE_SECRET_KEY
+#stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # --- 1. الحسابات والمستخدمين ---
 def register(request):
