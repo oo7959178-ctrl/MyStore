@@ -15,23 +15,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&e0e&bcdybm_@*o@&x*&2ycmww=x%=fxhw4(#n&uqg#a*(i2=+'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-&e0e&bcdybm_@*o@&x*&2ycmww=x%=fxhw4(#n&uqg#a*(i2=+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# سيتحول تلقائياً إلى False على سيرفر Render لحماية موقعك
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+# إضافة رابط Render ليعمل الموقع حياً بشكل سليم
+ALLOWED_HOSTS = ['*', 'mystore-9kma.onrender.com']
 
-# الحماية الموثوقة لروابط ngrok لعدم حدوث خطأ 403 CSRF
+# الحماية الموثوقة لروابط ngrok و Render لعدم حدوث خطأ 403 CSRF
 CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.dev',
     'https://*.ngrok-free.app',
+    'https://mystore-9kma.onrender.com',
 ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'cloudinary_storage',  # يجب أن تكون فوق staticfiles
+    'cloudinary',
     'store',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -131,10 +136,20 @@ STATICFILES_DIRS = [
 ]
 
 
-# Media Files (صور المنتجات المرفوعة)
+# Media Files (توجيه صور المنتجات المرفوعة إلى التخزين السحابي Cloudinary)
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# إعدادات مفاتيح الربط السحابية لـ Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
 
 
 # Authentication Redirects (توجيهات الحسابات)
@@ -143,7 +158,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
-# Stripe Keys (مفاتيح بوابة الدفع سترايب)
+# Stripe Keys (مفاتيح بوابة الدفع سترايب - معطلة بناءً على رغبتك)
 
 STRIPE_PUBLIC_KEY = 'pk_test_51TmWq8LMyx04TkRfznukmJhXxMfC5EIUS1d1yg0xfh3qKMxVWj87Zzj0w0KlsK0rjH6fO6j9TrtjjsxH0GDB0xaN00Vi0ayphi'
 
