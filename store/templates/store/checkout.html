@@ -3,13 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إتمام الطلب -  CREST</title>
+    <title>إتمام الطلب - CREST</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh; background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%); background-size: cover; background-attachment: fixed; color: white; }
-        .checkout-container { max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            min-height: 100vh; 
+            background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%); 
+            background-size: cover; 
+            background-attachment: fixed; 
+            color: white; 
+        }
+        .checkout-container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(12px); 
+            padding: 30px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            position: relative; 
+        }
         
         .btn-complete {
-            display: none; /* مخفي افتراضياً */
+            display: none; 
             background-color: transparent;
             color: #d946ef;
             border: 2px solid #d946ef;
@@ -30,33 +48,126 @@
             box-shadow: 0 0 25px #d946ef;
             transform: scale(1.02);
         }
+
+        /* --- تنسيقات النافذة المنبثقة الجديدة لمعلومات الزبون --- */
+        .modal-overlay {
+            display: none; /* مخفية افتراضياً */
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 7, 30, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: rgba(26, 16, 60, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 0 30px rgba(217, 70, 239, 0.2);
+            color: white;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-content h3 { 
+            margin-top: 0; 
+            text-align: center; 
+            color: #06b6d4; 
+            margin-bottom: 20px;
+        }
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 14px; 
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus { 
+            border-color: #d946ef; 
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+            background: rgba(255,255,255,0.1);
+        }
+        .modal-buttons { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 25px; 
+        }
+        .btn-submit-modal {
+            flex: 2; 
+            background: #d946ef; 
+            color: white; 
+            border: none; 
+            padding: 12px;
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px;
+            box-shadow: 0 0 10px #d946ef; 
+            transition: all 0.3s;
+        }
+        .btn-submit-modal:hover { 
+            box-shadow: 0 0 20px #d946ef; 
+            transform: scale(1.02); 
+        }
+        .btn-close-modal {
+            flex: 1; 
+            background: transparent; 
+            color: white; 
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: all 0.3s;
+        }
+        .btn-close-modal:hover { 
+            background: rgba(255,255,255,0.1); 
+        }
     </style>
 </head>
 <body>
     <div class="checkout-container">
-    <a href="/" class="btn-home">← العودة للرئيسية</a>
-    
-    <h2 style="text-align: center; margin-top: 0;">إتمام عملية الدفع</h2>
-    
+        <a href="/" class="btn-home" style="
+            color: #ffffff;          
+            position: absolute;      
+            top: 50px;               
+            right: 20px;             
+            text-decoration: none;   
+            font-size: 20px;
+        "> العودة للرئيسية</a>
+        
+        <h2 style="text-align: center; margin-top: 20px;">إتمام عملية الدفع</h2>
     </div>
     
 
-    <div id="payment-form">
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+    <div id="payment-form" style="max-width: 660px; margin: 20px auto 0 auto;">
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1);">
             <p style="margin-top: 0;">اختر وسيلة الدفع:</p>
             
-            <label style="display: block; margin-bottom: 10px; cursor: pointer;">
-                <input type="radio" name="payment_method" value="stripe"> 
-                بطاقة عالمية (Visa / MasterCard)
-            </label>
-            
-            <label style="display: block; margin-bottom: 10px; cursor: pointer;">
-                <input type="radio" name="payment_method" value="ccp"> 
-                البطاقة الذهبية (CCP)
-            </label>
-
             <label style="display: block; margin-bottom: 30px; cursor: pointer;">
-                <input type="radio" name="payment_method" value="cod"> 
+                <input type="radio" name="payment_method" value="cod" checked> 
                 الدفع عند الاستلام
             </label>
 
@@ -65,13 +176,51 @@
             </button>
         </div>
     </div>
-</div>
+
+    <div id="shipping-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>معلومات الشحن والتوصيل</h3>
+            
+            <div class="form-group">
+                <label for="client-name">الاسم الكامل:</label>
+                <input type="text" id="client-name" placeholder="أدخل اسمك " required>
+
+            </div>
+            
+            <div class="form-group">
+                <label for="client-phone">رقم الهاتف:</label>
+                <input type="tel" id="client-phone" placeholder="مثال: 0555123456" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-state">الولاية:</label>
+                <input type="text" id="client-state" placeholder="أدخل الولاية" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-city">المدينة / البلدية:</label>
+                <input type="text" id="client-city" placeholder="أدخل المدينة أو البلدية" required>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" class="btn-submit-modal" id="confirm-order-btn">تأكيد وإرسال الطلب 🛒</button>
+                <button type="button" class="btn-close-modal" id="close-modal-btn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+</body>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     const submitBtn = document.getElementById('submit-btn');
     const radioButtons = document.querySelectorAll('input[name="payment_method"]');
     const stripe = Stripe('pk_test_51TmWq8LMyx04TkRfznukmJhXxMfC5EIUS1d1yg0xfh3qKMxVWj87Zzj0w0KlsK0rjH6fO6j9TrtjjsxH0GDB0xaN00Vi0ayphi'); 
+
+    // عناصر النافذة المنبثقة
+    const shippingModal = document.getElementById('shipping-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const confirmOrderBtn = document.getElementById('confirm-order-btn');
 
     // إظهار الزر عند اختيار وسيلة دفع
     radioButtons.forEach((radio) => {
@@ -80,7 +229,18 @@
         });
     });
 
-    // المنطق عند الضغط على الزر
+    // التحقق التلقائي عند تحميل الصفحة لإظهار الزر فوراً
+    const defaultChecked = document.querySelector('input[name="payment_method"]:checked');
+    if (defaultChecked) {
+        submitBtn.style.display = 'block';
+    }
+
+    // إغلاق النافذة عند الضغط على إلغاء
+    closeModalBtn.addEventListener('click', function() {
+        shippingModal.style.display = 'none';
+    });
+
+    // المنطق البرمجي عند الضغط على زر إتمام الطلب الرئيسي
     submitBtn.addEventListener('click', function () {
         const selectedRadio = document.querySelector('input[name="payment_method"]:checked');
         if (!selectedRadio) return;
@@ -100,17 +260,54 @@
             window.location.href = '/payment-ccp/';
         } 
         else if (selectedMethod === 'cod') {
-            fetch('/checkout/cod/', { 
-                method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-                body: new URLSearchParams({ 'payment_method': 'cod' })
-            })
-            .then(res => {
-                if (res.redirected) window.location.href = res.url;
-                else alert('قيد المراجعة!');
-            });
+            // فتح النافذة المنبثقة بدلاً من الإرسال الفوري لطلب المعلومات
+            shippingModal.style.display = 'flex';
         }
     });
+
+    // المنطق البرمجي عند تأكيد الطلب من داخل النافذة المنبثقة
+    confirmOrderBtn.addEventListener('click', function() {
+        const name = document.getElementById('client-name').value.trim();
+        const phone = document.getElementById('client-phone').value.trim();
+        const state = document.getElementById('client-state').value.trim();
+        const city = document.getElementById('client-city').value.trim();
+
+        // التأكد من ملء جميع الحقول
+        if (!name || !phone || !state || !city) {
+            alert('الرجاء ملء جميع الخانات المطلوبة للشحن!');
+            return;
+        }
+
+        // تعطيل الزر مؤقتاً لتفادي تكرار الضغط والطلبات المتعددة
+        confirmOrderBtn.disabled = true;
+        confirmOrderBtn.innerText = 'جاري إرسال طلبك...';
+
+        // إرسال البيانات الأربعة مع وسيلة الدفع للباك إند
+        fetch('/checkout/cod/', { 
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            body: new URLSearchParams({ 
+                'payment_method': 'cod',
+                'name': name,
+                'phone': phone,
+                'state': state,
+                'city': city
+            })
+        })
+        .then(res => {
+            if (res.redirected) {
+                window.location.href = res.url;
+            } else {
+                alert('قيد المراجعة!');
+                confirmOrderBtn.disabled = false;
+                confirmOrderBtn.innerText = 'تأكيد وإرسال الطلب 🛒';
+            }
+        })
+        .catch(err => {
+            alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة ثانية.');
+            confirmOrderBtn.disabled = false;
+            confirmOrderBtn.innerText = 'تأكيد وإرسال الطلب 🛒';
+        });
+    });
 </script>
-</body>
 </html>

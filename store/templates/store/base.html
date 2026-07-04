@@ -1,60 +1,86 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    {% load i18n %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> CREST</title>
+    <title>CREST</title>
     <style>
-        /* كود CSS الخاص بك */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: linear-gradient(135deg, #0b071e 0%, #160d33 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s ease; }
         .loader-ring { width: 60px; height: 60px; border: 4px solid rgba(255, 255, 255, 0.05); border-radius: 50%; border-top-color: #06b6d4; border-bottom-color: #d946ef; animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; margin: 0 auto 25px; }
         .loader-title { color: #ffffff; font-size: 26px; font-weight: bold; text-align:center; }
         #preloader.fade-out { opacity: 0; visibility: hidden; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh; background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%); background-size: cover; background-attachment: fixed; display: flex; flex-direction: column; }
-        .navbar { position: sticky; top: 15px; background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 40px; width: 100%; box-sizing: border-box; z-index: 100; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh; background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%); background-size: cover; background-attachment: fixed; display: flex; flex-direction: column; color: white; }
+        
+        /* تحسين الهيدر ليكون مرناً على الهاتف والكمبيوتر ومنع التداخل */
+        .navbar { position: sticky; top: 15px; background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 40px; width: 100%; box-sizing: border-box; z-index: 100; flex-wrap: wrap; gap: 15px; }
         .navbar-brand { font-size: 24px; font-weight: bold; text-decoration: none; background: linear-gradient(45deg, #06b6d4, #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 16px; }
-        footer { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding: 25px; text-align: center; font-size: 14px; color: rgba(255,255,255,0.5); }
+        .nav-links { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .nav-links a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 16px; font-weight: bold; }
+        
+        /* تنسيق أنيق لفورم اللغة المصغر */
+        .lang-form { display: flex; gap: 5px; align-items: center; margin: 0 5px; }
+        .lang-btn { background: none; border: none; color: rgba(255,255,255,0.6); padding: 2px 5px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .lang-btn.active { color: #06b6d4; font-weight: bold; border-bottom: 2px solid #06b6d4; }
+        
+        main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+        footer { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding: 25px; text-align: center; font-size: 14px; color: rgba(255,255,255,0.5); }
         footer a { color: #06b6d4; text-decoration: none; margin: 0 10px; }
+
+        /* ألوان الوضع المضيء */
+        body.light-mode { background-image: radial-gradient(at 80% 20%, rgba(6, 182, 212, 0.1) 0px, transparent 50%), radial-gradient(at 20% 80%, rgba(217, 70, 239, 0.1) 0px, transparent 50%), linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); color: #1e293b; }
+        body.light-mode .navbar { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.08); }
+        body.light-mode .nav-links a { color: #334155; }
+        body.light-mode .lang-btn { color: #64748b; }
+        body.light-mode .lang-btn.active { color: #0891b2; border-bottom-color: #0891b2; }
+        body.light-mode #theme-toggle { background: rgba(0, 0, 0, 0.05); color: #334155; border-color: rgba(0, 0, 0, 0.1); }
+        body.light-mode footer { color: #64748b; border-top-color: rgba(0,0,0,0.08); }
+
+        @media (max-width: 600px) {
+            .navbar { padding: 10px 15px; justify-content: center; }
+            .nav-links { width: 100%; justify-content: center; gap: 10px; }
+        }
     </style>
 </head>
 <body>
 
     <div id="preloader">
-        <div class="loader-content"><div class="loader-ring"></div><div class="loader-title">مرحباً بك في  CREST</div></div>
+        <div class="loader-content"><div class="loader-ring"></div><div class="loader-title">مرحباً بك في CREST</div></div>
     </div>
 
     <nav class="navbar">
-        <a href="/" class="navbar-brand"> CREST</a>
+        <a href="/" class="navbar-brand">CREST</a>
 
-        <a href="/" class="navbar-brand">CREST<form action="{% url 'set_language' %}" method="post">
-    {% csrf_token %}
-    <input name="next" type="hidden" value="{{ request.get_full_path }}">
-    
-    <input type="hidden" name="language" id="lang-input" value="">
-    
-    {% get_current_language as LANGUAGE_CODE %}
-    {% get_available_languages as LANGUAGES %}
-    
-    {% for lang in LANGUAGES %}
-        <button type="submit" 
-                onclick="document.getElementById('lang-input').value='{{ lang.0 }}';"
-                style="display:block; width:100%; background:none; border:none; color:white; text-align:right; padding:5px 0; cursor:pointer; {% if lang.0 == LANGUAGE_CODE %}color:#06b6d4; font-weight:bold;{% endif %}">
-            {{ lang.1 }}
-        </button>
-    {% endfor %}
-</form>/a>
-        <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
-            <button id="theme-toggle" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer;">🌙</button>
+        <div class="nav-links">
+            <button id="theme-toggle" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 6px 12px; border-radius: 20px; cursor: pointer;">🌙</button>
+            
+            <form action="{% url 'set_language' %}" method="post" class="lang-form">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                <input type="hidden" name="language" id="lang-input" value="">
+                
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                
+                {% for lang in LANGUAGES %}
+                    <button type="submit" 
+                            onclick="document.getElementById('lang-input').value='{{ lang.0 }}';"
+                            class="lang-btn {% if lang.0 == LANGUAGE_CODE %}active{% endif %}">
+                        {{ lang.1 }}
+                    </button>
+                {% endfor %}
+            </form>
+
             {% if user.is_authenticated %}
-                <a href="{% url 'my_orders' %}" style="color: white; text-decoration: none;">📦 طلباتي</a>
+                <a href="{% url 'my_orders' %}">📦 طلباتي</a>
             {% else %}
                 <a href="{% url 'login' %}">تسجيل الدخول</a>
             {% endif %}
-            <a href="{% url 'cart_detail' %}" style="background: rgba(6, 182, 212, 0.15); border: 1px solid #06b6d4; padding: 8px 16px; border-radius: 20px; text-decoration: none; color: #06b6d4; font-weight: bold;">
-                🛒 السلة ({{ request.session.cart.keys|length|default:0 }})
+            
+            <a href="{% url 'cart_detail' %}" style="background: rgba(6, 182, 212, 0.15); border: 1px solid #06b6d4; padding: 6px 14px; border-radius: 20px; text-decoration: none; color: #06b6d4; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                🛒 السلة <span style="background: #d946ef; color: white; border-radius: 50%; padding: 1px 7px; font-size: 12px;">{{ request.session.cart.keys|length|default:0 }}</span>
             </a>
         </div>
     </nav>
@@ -65,13 +91,28 @@
     </main>
 
     <footer>
-        <p>© 2026  CREST. جميع الحقوق محفوظة.</p>
+        <p>© 2026 CREST. جميع الحقوق محفوظة.</p>
     </footer>
 
     <script>
         window.addEventListener('load', function() { setTimeout(() => { document.getElementById('preloader').classList.add('fade-out'); }, 800); });
+        
         const themeToggleBtn = document.getElementById('theme-toggle');
-        themeToggleBtn.addEventListener('click', () => { document.body.classList.toggle('light-mode'); });
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggleBtn.innerText = '☀️';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeToggleBtn.innerText = '☀️';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggleBtn.innerText = '🌙';
+            }
+        });
     </script>
 </body>
 </html>

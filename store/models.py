@@ -29,12 +29,31 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+# --- الموديل الجديد المضاف لرفع صور متعددة للمنتج الواحد ---
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', verbose_name="المنتج")
+    image = models.ImageField(upload_to='products/gallery/', verbose_name="صورة إضافية")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "صورة للمنتج"
+        verbose_name_plural = "معرض صور المنتجات"
+
+    def __str__(self):
+        return f"صورة إضافية لـ {self.product.name}"
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     payment_method = models.CharField(max_length=50, choices=PAYMENT_CHOICES, default='visa', verbose_name="طريقة الدفع")
     transaction_id = models.CharField(max_length=200, null=True)
     status = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # 👇 الحقول الجديدة المضافة لاستقبال بيانات شحن الدفع عند الاستلام 👇
+    client_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="الاسم الكامل")
+    client_phone = models.CharField(max_length=50, blank=True, null=True, verbose_name="رقم الهاتف")
+    client_state = models.CharField(max_length=100, blank=True, null=True, verbose_name="الولاية")
+    client_city = models.CharField(max_length=100, blank=True, null=True, verbose_name="المدينة / البلدية")
 
     def __str__(self):
         return f"طلب #{self.id} - {self.user.username if self.user else 'زائر'}"

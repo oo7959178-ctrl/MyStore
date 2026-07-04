@@ -32,6 +32,7 @@ urlpatterns = [
     path('checkout/cod/', views.cod_checkout, name='cod_checkout'),
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
 ]
 from django.conf import settings
 from django.conf.urls.static import static

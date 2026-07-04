@@ -36,6 +36,7 @@
             align-items: center; 
             max-width: 1400px;
             margin: 0 auto 40px; width: 100%; box-sizing: border-box; z-index: 100;
+            flex-wrap: wrap; gap: 15px; /* حل مشكلة تداخل هيدر الهاتف بالالتفاف والمسافات البينية */
         }
         .navbar-brand {
             font-size: 24px; font-weight: bold; text-decoration: none;
@@ -43,26 +44,29 @@
         }
         .nav-links a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 16px; }
 
+        /* تعديل الحاوية لدعم عمودين على الهاتف وتلقائي على الشاشات الكبيرة */
         .products-container { 
            display: grid; 
-           grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-           gap: 25px; 
+           grid-template-columns: repeat(2, 1fr); /* الافتراضي للهاتف: عمودين */
+           gap: 15px; 
            max-width: 1400px;
            margin: 0 auto; 
            width: 100%; 
            flex: 1; 
          }
-        .product-card { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); text-align: center; transition: transform 0.3s; height: fit-content; }
-        .product-card:hover { transform: translateY(-8px); }
-        .product-image-area { width: 100%; height: 180px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255, 255, 255, 0.05); }
-        .product-img { width: 100%; height: 100%; object-fit: cover; }
-        .product-title { font-size: 22px; font-weight: bold; margin-bottom: 12px; color: #ffffff; }
-        .product-price { color: #06b6d4; font-size: 20px; font-weight: bold; margin-bottom: 25px; }
         
-        .btn-group { display: flex; gap: 10px; }
-        .btn-buy { background: linear-gradient(90deg, #7c3aed, #4f46e5); color: white; border: none; padding: 8px; border-radius: 10px; cursor: pointer; flex: 1; font-size: 14px; font-weight: bold; transition: all 0.3s; text-decoration: none; text-align: center; line-height: 1.2; }
+        /* تقليص الحشو والأبعاد لتناسب مساحة العمودين في الهاتف */
+        .product-card { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(12px); padding: 12px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.15); text-align: center; transition: transform 0.3s; height: fit-content; }
+        .product-card:hover { transform: translateY(-8px); }
+        .product-image-area { width: 100%; height: 140px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255, 255, 255, 0.05); }
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .product-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: #ffffff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; line-height: 1.2; }
+        .product-price { color: #06b6d4; font-size: 15px; font-weight: bold; margin-bottom: 12px; }
+        
+        .btn-group { display: flex; gap: 6px; flex-direction: column; } /* ترتيب الأزرار عمودياً في مساحة العمودين الضيقة لشكل أرتب */
+        .btn-buy { background: linear-gradient(90deg, #7c3aed, #4f46e5); color: white; border: none; padding: 8px 4px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.3s; text-decoration: none; text-align: center; line-height: 1.2; }
         .btn-buy:hover { background: linear-gradient(90deg, #9061f9, #6366f1); transform: scale(1.02); }
-        .btn-details { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px; border-radius: 10px; cursor: pointer; flex: 1; font-size: 14px; text-decoration: none; display: inline-block; transition: background 0.3s; line-height: 1.2; }
+        .btn-details { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 4px; border-radius: 8px; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-block; transition: background 0.3s; line-height: 1.2; }
         .btn-details:hover { background: rgba(255, 255, 255, 0.2); }
 
         footer { margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding: 25px; text-align: center; font-size: 14px; color: rgba(255,255,255,0.5); }
@@ -91,16 +95,44 @@
         body.light-mode .search-input::placeholder { color: #94a3b8 !important; }
         body.light-mode footer { color: #64748b; border-top-color: rgba(0,0,0,0.08); }
 
+        /* شاشات التابلت وأكبر: 3 أعمدة للأجهزة المتوسطة */
+        @media (min-width: 700px) {
+            .products-container { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+            .product-card { padding: 20px; }
+            .product-image-area { height: 160px; }
+            .product-title { font-size: 18px; height: auto; -webkit-line-clamp: unset; }
+            .product-price { font-size: 18px; }
+            .btn-group { flex-direction: row; gap: 10px; }
+            .btn-buy, .btn-details { font-size: 14px; padding: 8px; }
+        }
+
+        /* شاشات الحواسيب الكبيرة: 4 أعمدة لشكل احترافي وممتاز */
+        @media (min-width: 1024px) {
+            .products-container { grid-template-columns: repeat(4, 1fr); gap: 25px; }
+            .product-image-area { height: 180px; }
+            .product-title { font-size: 22px; }
+            .product-price { font-size: 20px; }
+        }
+
         @media (max-width: 600px) {
-            h1, h2 { font-size: 1.5rem !important; } /* تم تصحيح الفاصلة إلى نقطة هنا */
+            h1, h2 { font-size: 1.5rem !important; }
             input[type="text"], button {
                 padding: 10px !important;
-                font-size: 20px !important;
+                font-size: 16px !important; /* تقليل حجم خط المدخلات ليناسب الهاتف بدل 20px */
             }
             .container, .header, nav {
                 width: 100% !important;
                 margin: 0 auto !important;
-                padding: 5px !important;
+                padding: 10px !important;
+            }
+            .navbar {
+                padding: 10px 15px; 
+                justify-content: center; /* موازنة توزيع الهيدر في الهواتف لمنع التراص الجانبي */
+            }
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
             }
         }
 
@@ -114,6 +146,8 @@
             transition: 0.3s;
         }
         .username-text:hover { background: rgba(255, 255, 255, 0.1); }
+        body.light-mode .username-text { color: #1e293b; }
+        body.light-mode .username-text:hover { background: rgba(0, 0, 0, 0.05); }
 
         /* تنسيق القائمة المنسدلة */
         .dropdown-content {
@@ -147,7 +181,7 @@
     </div>
 
     <nav class="navbar">
-        <a href="/" class="navbar-brand" style="color: #000000; text-shadow: 0 0 0px #6c0d7a, 0 0 0px #6a007a; text-decoration: none; font-weight: bold; font-size: 24px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; font-family: 'Arial', sans-serif;">
+        <a href="/" class="navbar-brand" style="text-shadow: 0 0 0px #6c0d7a, 0 0 0px #6a007a; text-decoration: none; font-weight: bold; font-size: 24px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; font-family: 'Arial', sans-serif;">
             <span>🦚</span> <span>CREST</span>
         </a>
         <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
@@ -158,45 +192,41 @@
 
             <a href="{% url 'cart_detail' %}" style="background: rgba(6, 182, 212, 0.15); border: 1px solid #06b6d4; padding: 8px 16px; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 8px; color: #06b6d4; font-weight: bold;">
                 🛒 السلة 
-            
                 <span style="background: #d946ef; color: white; border-radius: 50%; padding: 2px 8px; font-size: 13px;">
-                
                     {{ request.session.cart.keys|length|default:0 }}
                 </span>
-                <a href="{% url 'my_orders' %}">طلباتي</a>
             </a>
+            <a href="{% url 'my_orders' %}" style="color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 16px; font-weight: bold;">طلباتي</a>
 
          {% if user.is_authenticated %}
     <div style="position: relative; display: inline-block;">
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span class="username-text" onclick="toggleMenu()" style="color: white; font-weight: bold; cursor: pointer; padding: 10px;">
+            <span class="username-text" onclick="toggleMenu()">
                 {{ user.username }} ▾
             </span>
         </div>
 
         <div id="userDropdown" class="dropdown-content">
             <a href="{% url 'profile' %}">عرض الملف الشخصي</a>
-           
             
             <div style="padding: 10px 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                <p style="color: #06b6d4; font-size: 18px; margin: 0 0 5px 0;">تغيير اللغة:</p>
+                <p style="color: #06b6d4; font-size: 14px; margin: 0 0 5px 0;">تغيير اللغة:</p>
                 <form action="{% url 'set_language' %}" method="post">
-    {% csrf_token %}
-    <input name="next" type="hidden" value="{{ request.get_full_path }}">
-    
-    <input type="hidden" name="language" id="lang-input" value="">
-    
-    {% get_current_language as LANGUAGE_CODE %}
-    {% get_available_languages as LANGUAGES %}
-    
-    {% for lang in LANGUAGES %}
-        <button type="submit" 
-                onclick="document.getElementById('lang-input').value='{{ lang.0 }}';"
-                style="display:block; width:100%; background:none; border:none; color:white; text-align:right; padding:5px 0; cursor:pointer; {% if lang.0 == LANGUAGE_CODE %}color:#06b6d4; font-weight:bold;{% endif %}">
-            {{ lang.1 }}
-        </button>
-    {% endfor %}
-</form>
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                    <input type="hidden" name="language" id="lang-input" value="">
+                    
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    
+                    {% for lang in LANGUAGES %}
+                        <button type="submit" 
+                                onclick="document.getElementById('lang-input').value='{{ lang.0 }}';"
+                                style="display:block; width:100%; background:none; border:none; color:white; text-align:right; padding:5px 0; cursor:pointer; {% if lang.0 == LANGUAGE_CODE %}color:#06b6d4; font-weight:bold;{% endif %}">
+                            {{ lang.1 }}
+                        </button>
+                    {% endfor %}
+                </form>
             </div>
 
             <form action="{% url 'logout' %}" method="post" style="margin: 0;">
@@ -290,7 +320,7 @@
                 <div class="product-price">{{ product.price }} د.ج</div>
                 <div class="btn-group">
                     <a href="{% url 'product_detail' product.id %}" class="btn-details">التفاصيل</a>
-                    <a href="{% url 'add_to_cart' product.id %}" class="btn-buy">🛒 إضافة للسلة</a>
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn-buy">🛒 السلة</a>
                 </div>
             </div>
         {% empty %}
@@ -310,7 +340,6 @@
     </footer>
 
     <script>
-        // كود القائمة المنسدلة (Dropdown)
         function toggleMenu() {
             const dropdown = document.getElementById("userDropdown");
             if (dropdown) {
@@ -318,7 +347,6 @@
             }
         }
 
-        // إغلاق القائمة عند الضغط في أي مكان
         window.onclick = function(event) {
             if (!event.target.matches('.username-text')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -331,7 +359,6 @@
             }
         }
 
-        // كود شاشة التحميل (Preloader)
         window.addEventListener('load', function() {
             const preloader = document.getElementById('preloader');
             if (preloader) {
@@ -339,7 +366,6 @@
             }
         });
 
-        // كود التبديل بين الوضعين
         const themeToggleBtn = document.getElementById('theme-toggle');
         if (themeToggleBtn) {
             if (localStorage.getItem('theme') === 'light') {
