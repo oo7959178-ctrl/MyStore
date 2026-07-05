@@ -84,6 +84,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # استخدام الطريقة القياسية لـ dj_database_url
+import os
+import dj_database_url
+
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL'),
