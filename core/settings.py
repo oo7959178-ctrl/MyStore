@@ -88,6 +88,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# 1. الإعدادات الحديثة (هذه هي المسؤولة عن تشغيل الموقع)
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
@@ -96,6 +97,9 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# 2. إعداد إضافي (للخداع فقط) لإسكات المكتبة ومنع خطأ AttributeError
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # بيانات ربط Cloudinary
 CLOUDINARY_STORAGE = {
