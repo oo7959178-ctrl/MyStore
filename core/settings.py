@@ -92,11 +92,20 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# إعدادات التخزين الحديثة لجانغو (تعوض DEFAULT_FILE_STORAGE القديمة)
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
+# بيانات ربط Cloudinary
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
@@ -105,8 +114,6 @@ CLOUDINARY_STORAGE = {
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-
-STRIPE_PUBLIC_KEY = 'pk_test_51TmWq8LMyx04TkRfznukmJhXxMfC5EIUS1d1yg0xfh3qKMxVWj87Zzj0w0KlsK0rjH6fO6j9TrtjjsxH0GDB0xaN00Vi0ayphi'
 
 try:
     from local_settings import *
