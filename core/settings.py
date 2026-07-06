@@ -88,18 +88,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# إعدادات التخزين الحديثة
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-
-# إضافة هذا السطر لحل مشكلة AttributeError في مكتبة cloudinary_storage
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # بيانات ربط Cloudinary
 CLOUDINARY_STORAGE = {
