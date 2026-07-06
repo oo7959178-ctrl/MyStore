@@ -1,4 +1,3 @@
-import stripe
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
@@ -6,11 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.views.decorators.csrf import csrf_exempt
 from .models import Order, Product, Category
-
-# إعداد مفتاح سترايب السري
-#stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # --- 1. الحسابات والمستخدمين ---
 def register(request):
@@ -49,7 +44,6 @@ def home(request):
     context = {
         'products': products,
         'categories': categories,
-        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
         'search_query': search_query,
         'selected_category': int(category_id) if category_id.isdigit() else '',
     }
@@ -100,7 +94,6 @@ def cart_detail(request):
     context = {
         'cart_items': cart_items,
         'total_price': total_price,
-        'stripe_public_key': settings.STRIPE_PUBLIC_KEY
     }
     return render(request, 'store/cart.html', context)
 
@@ -120,9 +113,7 @@ def remove_from_cart(request, product_id):
 def process_payment(request):
     if request.method == 'POST':
         method = request.POST.get('payment_method')
-        if method == 'stripe':
-            return create_checkout_session(request)
-        elif method == 'ccp':
+        if method == 'ccp':
             return redirect('ccp_checkout')
         elif method == 'cod':
             return redirect('cod_checkout') 
@@ -130,80 +121,7 @@ def process_payment(request):
     return JsonResponse({'error': 'طريقة دفع غير صحيحة'}, status=400)
 
 
-# --- 5. بوابة دفع Stripe التلقائية ---
-def create_checkout_session(request):
-    cart = request.session.get('cart', {})
-    if not cart:
-        return JsonResponse({'error': 'السلة فارغة'}, status=400)
-    
-    line_items = []
-    for product_id, quantity in cart.items():
-        product = get_object_or_404(Product, id=product_id)
-        line_items.append({
-            'price_data': {
-                'currency': 'usd', 
-                'product_data': {
-                    'name': product.name,
-                },
-                'unit_amount': int(product.price * 100), 
-            },
-            'quantity': quantity,
-        })
-
-    try:
-        order = Order.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            payment_method='visa',
-            status='تم الدفع (Stripe)'
-        )
-
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            client_reference_id=order.id, 
-            line_items=line_items,
-            mode='payment',
-            success_url=request.build_absolute_uri('/success/'),
-            cancel_url=request.build_absolute_uri('/cart/'),
-        )
-        return JsonResponse({'id': checkout_session.id})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-
-@csrf_exempt
-def stripe_webhook(request):
-    payload = request.body
-    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    endpoint_secret = getattr(settings, 'STRIPE_WEBHOOK_SECRET', None)
-
-    try:
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-    except (ValueError, stripe.error.SignatureVerificationError):
-        return HttpResponse(status=400)
-
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        order_id = session.get('client_reference_id')
-        stripe_payment_id = session.get('payment_intent') or session.get('id')
-        
-        if order_id:
-            try:
-                order = Order.objects.get(id=order_id)
-                order.status = 'Paid'
-                order.transaction_id = stripe_payment_id
-                order.save()
-            except Order.DoesNotExist:
-                pass
-                
-    return HttpResponse(status=200)
-
-@login_required(login_url='login')
-def payment_success(request):
-    if 'cart' in request.session:
-        del request.session['cart']
-    return render(request, 'store/success.html')
-
-
-# --- 6. بوابة دفع البطاقة الذهبية CCP ---
+# --- 5. بوابة دفع البطاقة الذهبية CCP ---
 @login_required(login_url='login')
 def ccp_checkout(request):
     if request.method == 'POST':
@@ -234,7 +152,7 @@ def ccp_checkout(request):
     return render(request, 'ccp_checkout.html')
 
 
-# --- 7. بوابة الدفع عند الاستلام COD ---
+# --- 6. بوابة الدفع عند الاستلام COD ---
 @login_required(login_url='login')
 def cod_checkout(request):
     cart = request.session.get('cart', {})
@@ -271,7 +189,13 @@ def cod_checkout(request):
     return render(request, 'store/checkout.html')
 
 
-# --- 8. دوال إضافية وصفحات فرعية ---
+# --- 7. دوال إضافية وصفحات فرعية ---
+@login_required(login_url='login')
+def payment_success(request):
+    if 'cart' in request.session:
+        del request.session['cart']
+    return render(request, 'store/success.html')
+
 def checkout(request):
     return render(request, 'store/checkout.html')
 

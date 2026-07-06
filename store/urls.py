@@ -8,7 +8,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', views.home, name='home'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
-    path('create-checkout-session/', views.create_checkout_session, name='create-checkout-session'),
     
     # روابط سلة التسوق
     path('cart/', views.cart_detail, name='cart_detail'),
@@ -32,7 +31,7 @@ urlpatterns = [
     path('checkout/cod/', views.cod_checkout, name='cod_checkout'),
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
     path('i18n/', include('django.conf.urls.i18n')),
-    path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
+   
 ]
 from django.conf import settings
 from django.conf.urls.static import static
