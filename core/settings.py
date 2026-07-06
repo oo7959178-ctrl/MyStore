@@ -88,18 +88,19 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# 1. الإعدادات الحديثة (هذه هي المسؤولة عن تشغيل الموقع)
+# 1. الإعدادات الحديثة
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # استخدام التخزين الافتراضي لجانغو لتجنب أخطاء الضغط
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
-# 2. إعداد إضافي (للخداع فقط) لإسكات المكتبة ومنع خطأ AttributeError
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# 2. إعداد التوافق (لإسكات مكتبة Cloudinary)
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # بيانات ربط Cloudinary
 CLOUDINARY_STORAGE = {
