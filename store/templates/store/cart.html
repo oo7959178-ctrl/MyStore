@@ -6,47 +6,48 @@
     <title>سلة المشتريات -  CREST</title>
     <style>
         /* تنسيق اسم المستخدم كزر */
-.username-text {
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: 0.3s;
-}
-.username-text:hover { background: rgba(255, 255, 255, 0.1); }
+        .username-text {
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .username-text:hover { background: rgba(255, 255, 255, 0.1); }
 
-/* تنسيق النافذة المنسدلة */
-.dropdown-content {
-    display: none; /* إخفاء النافذة افتراضياً */
-    position: absolute;
-    right: 0;
-    top: 50px;
-    background: rgba(26, 26, 46, 0.95);
-    backdrop-filter: blur(10px);
-    min-width: 180px;
-    box-shadow: 0px 8px 20px rgba(0,0,0,0.6);
-    border-radius: 12px;
-    z-index: 1000;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.15);
-}
-.dropdown-content a {
-    color: white;
-    padding: 12px 15px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
-    transition: 0.3s;
-    text-align: right;
-}
-.dropdown-content a:hover { 
-    background-color: rgba(6, 182, 212, 0.2); 
-    color: #06b6d4;
-    padding-right: 20px; /* حركة خفيفة عند تمرير الماوس */
-}
-/* كلاس الإظهار الذي يتم تفعيله بالجافاسكربت */
-.show { display: block; }
+        /* تنسيق النافذة المنسدلة */
+        .dropdown-content {
+            display: none; /* إخفاء النافذة افتراضياً */
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 180px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.6);
+            border-radius: 12px;
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            transition: 0.3s;
+            text-align: right;
+        }
+        .dropdown-content a:hover { 
+            background-color: rgba(6, 182, 212, 0.2); 
+            color: #06b6d4;
+            padding-right: 20px; /* حركة خفيفة عند تمرير الماوس */
+        }
+        /* كلاس الإظهار الذي يتم تفعيله بالجافاسكربت */
+        .show { display: block; }
+        
         body {
             font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh;
             background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%);
@@ -78,7 +79,10 @@
         .cart-summary {
             flex: 1; min-width: 300px; background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); height: fit-content;
         }
-        .total-price { color: #d946ef; font-size: 24px; font-weight: bold; margin: 20px 0; }
+        
+        /* جعل اللون الافتراضي للإجمالي أبيض في الوضع المظلم */
+        .total-price { color: white; font-size: 24px; font-weight: bold; margin: 20px 0; }
+        .total-price span { color: white; }
         
         .btn-checkout { background: linear-gradient(90deg, #7c3aed, #4f46e5); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; transition: 0.3s; }
         .btn-checkout:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4); }
@@ -96,6 +100,7 @@
         body.light-mode .navbar { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.08); }
         body.light-mode .navbar-brand { background: linear-gradient(45deg, #0891b2, #c026d3); -webkit-background-clip: text; }
         body.light-mode .nav-links a { color: #334155; }
+        body.light-mode .username-text { color: #334155 !important; } /* تعديل لون اسم المستخدم */
         body.light-mode #theme-toggle { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #334155; }
         body.light-mode footer { color: #64748b; border-top-color: rgba(0,0,0,0.08); }
         
@@ -108,50 +113,53 @@
         }
         body.light-mode .cart-table th { color: #0891b2 !important; }
         body.light-mode .cart-table td { border-bottom: 1px solid #e2e8f0 !important; }
-        body.light-mode .total-price { color: #c026d3 !important; }
+        
+        /* تعديل اللون ليصبح أسود تماماً للإجمالي والأرقام في الوضع المضيء */
+        body.light-mode .total-price,
+        body.light-mode .total-price span { color: #000000 !important; }
     </style>
 </head>
 <body>
 
-  <<nav class="navbar">
-    <a href="/" class="navbar-brand" style="color: #000000; text-shadow: 0 0 0px #6c0d7a, 0 0 0px #6a007a; text-decoration: none; font-weight: bold; font-size: 24px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; font-family: 'Arial', sans-serif;">
-        <span>🌳</span> <span>CREST</span>
-    </a>
-    <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
-    
-        <button id="theme-toggle" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 16px; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
-            🌙
-        </button>
-
-        <a href="{% url 'cart_detail' %}" style="background: rgba(6, 182, 212, 0.15); border: 1px solid #06b6d4; padding: 8px 16px; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 8px; color: #06b6d4; font-weight: bold;">
-            🛒 السلة 
-            <span style="background: #d946ef; color: white; border-radius: 50%; padding: 2px 8px; font-size: 13px;">
-                {{ request.session.cart.keys|length|default:0 }}
-            </span>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand" style="color: #000000; text-shadow: 0 0 0px #6c0d7a, 0 0 0px #6a007a; text-decoration: none; font-weight: bold; font-size: 24px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; font-family: 'Arial', sans-serif;">
+            <span>🌳</span> <span>CREST</span>
         </a>
+        <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
+        
+            <button id="theme-toggle" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 16px; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                🌙
+            </button>
 
-        {% if user.is_authenticated %}
-            <div style="position: relative; display: inline-block;">
-                <span class="username-text" onclick="toggleMenu()" style="color: white; font-weight: bold; cursor: pointer; padding: 10px;">
-                    {{ user.username }} 
+            <a href="{% url 'cart_detail' %}" style="background: rgba(6, 182, 212, 0.15); border: 1px solid #06b6d4; padding: 8px 16px; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 8px; color: #06b6d4; font-weight: bold;">
+                🛒 السلة 
+                <span style="background: #d946ef; color: white; border-radius: 50%; padding: 2px 8px; font-size: 13px;">
+                    {{ request.session.cart.keys|length|default:0 }}
                 </span>
-                <div id="userDropdown" class="dropdown-content">
-                    <a href="{% url 'profile' %}">عرض الملف الشخصي</a>
-                    <form action="{% url 'logout' %}" method="post" style="margin: 0; padding: 0;">
-                        {% csrf_token %}
-                      <button type="submit" style="background: none; border: none; color: #ff4757; width: 100%; text-align: right; padding: 12px 15px; cursor: pointer; font-size: 14px; font-family: inherit;">
-                            تسجيل الخروج
-                       </button>
-                    </form>
-                </div>
-            </div>
-        {% else %}
-            <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 14px;">تسجيل الدخول</a>
-            <a href="{% url 'register' %}" style="color: #0b82f1; text-decoration: none; font-size: 14px;">إنشاء حساب</a>
-        {% endif %}
+            </a>
 
-    </div>
-</nav>
+            {% if user.is_authenticated %}
+                <div style="position: relative; display: inline-block;">
+                    <span class="username-text" onclick="toggleMenu()" style="font-weight: bold; cursor: pointer; padding: 10px;">
+                        {{ user.username }} 
+                    </span>
+                    <div id="userDropdown" class="dropdown-content">
+                        <a href="{% url 'profile' %}">عرض الملف الشخصي</a>
+                        <form action="{% url 'logout' %}" method="post" style="margin: 0; padding: 0;">
+                            {% csrf_token %}
+                          <button type="submit" style="background: none; border: none; color: #ff4757; width: 100%; text-align: right; padding: 12px 15px; cursor: pointer; font-size: 14px; font-family: inherit;">
+                                تسجيل الخروج
+                           </button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 14px;">تسجيل الدخول</a>
+                <a href="{% url 'register' %}" style="color: #0b82f1; text-decoration: none; font-size: 14px;">إنشاء حساب</a>
+            {% endif %}
+
+        </div>
+    </nav>
 
     <div class="cart-wrapper">
         <div class="cart-table-container">
@@ -186,11 +194,13 @@
             <h3>ملخص الطلب</h3>
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
             <p>إجمالي المنتجات: <span style="float: left;">{{ cart_items|length }}</span></p>
-           <div class="total-price" style="color: white;">
-    الإجمالي الكلي: <span style="float: left; color: white;">{{ total_price }} د.ج</span>
-</div>
+            
+            <div class="total-price">
+                الإجمالي الكلي: <span style="float: left;">{{ total_price }} د.ج</span>
+            </div>
+            
             <a href="{% url 'checkout' %}" class="btn-checkout" style="text-decoration: none; display: block; text-align: center; box-sizing: border-box;">
-    💳 الانتقال للدفع المباشر
+                💳 الانتقال للدفع المباشر
             </a>
         </div>
     </div>
@@ -198,7 +208,6 @@
     <footer>
         <p>© 2026  CREST. جميع الحقوق محفوظة.</p>
     </footer>
-
 
     <script>
     // كود القائمة المنسدلة (Dropdown)
