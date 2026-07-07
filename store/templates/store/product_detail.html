@@ -78,29 +78,36 @@
     </nav>
 
     <div class="detail-container">
-        <div class="image-box">
-            {% if product.image %}
-                <div style="margin-bottom: 15px;">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                </div>
-            {% endif %}
-
-            {% if product.video %}
-                <div style="margin-bottom: 15px;">
-                    <video width="100%" controls style="border-radius: 16px;">
-                        <source src="{{ product.video.url }}" type="video/mp4">
-                    </video>
-                </div>
-            {% endif %}
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px;">
-                {% for img in product.images.all %}
-                    <div style="border-radius: 8px; overflow: hidden; height: 80px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);">
-                        <img src="{{ img.image.url }}" alt="صورة إضافية" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                {% endfor %}
-            </div>
+       <div class="image-box">
+    {% if product.image %}
+        <div style="margin-bottom: 15px;">
+            <img id="main-image" src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 12px; transition: opacity 0.3s ease-in-out;">
         </div>
+    {% endif %}
+
+    {% if product.video %}
+        <div style="margin-bottom: 15px;">
+            <video width="100%" controls style="border-radius: 16px;">
+                <source src="{{ product.video.url }}" type="video/mp4">
+            </video>
+        </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px;">
+        
+        {% if product.image %}
+            <div onclick="changeMainImage('{{ product.image.url }}')" style="border-radius: 8px; overflow: hidden; height: 80px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); cursor: pointer;">
+                <img src="{{ product.image.url }}" alt="الصورة الرئيسية" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        {% endif %}
+
+        {% for img in product.images.all %}
+            <div onclick="changeMainImage('{{ img.image.url }}')" style="border-radius: 8px; overflow: hidden; height: 80px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); cursor: pointer;">
+                <img src="{{ img.image.url }}" alt="صورة إضافية" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
         <div class="info-box">
             <div class="title">{{ product.name }}</div>
@@ -152,5 +159,19 @@
             });
         }
     </script>
+    <script>
+    // دالة تغيير الصورة الرئيسية عند النقر على الصور المصغرة
+    function changeMainImage(newImageSrc) {
+        const mainImage = document.getElementById('main-image');
+        if (mainImage) {
+            // تأثير وميض خفيف (اختياري لجمالية الموقع)
+            mainImage.style.opacity = 0.5; 
+            setTimeout(() => {
+                mainImage.src = newImageSrc;
+                mainImage.style.opacity = 1;
+            }, 150);
+        }
+    }
+</script>
 </body>
 </html>
