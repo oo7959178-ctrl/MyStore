@@ -25,6 +25,7 @@ class Product(models.Model):
     video = models.FileField(upload_to='products/videos/', blank=True, null=True) # تم دمج حقل الفيديو
     description = models.TextField(blank=True, null=True, verbose_name="وصف المنتج")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products', verbose_name="التصنيف")
+    stock = models.IntegerField(default=10)  # حقل كمية المخزون المتبقية
 
     def __str__(self):
         return self.name

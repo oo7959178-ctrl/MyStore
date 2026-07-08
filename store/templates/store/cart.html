@@ -3,167 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سلة المشتريات -  CREST</title>
+    <title>سلة المشتريات - CREST</title>
     <style>
         /* تنسيق اسم المستخدم كزر */
-        .username-text {
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
+        .username-text { color: white; font-weight: bold; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: 0.3s; }
         .username-text:hover { background: rgba(255, 255, 255, 0.1); }
 
         /* تنسيق النافذة المنسدلة */
-        .dropdown-content {
-            display: none; /* إخفاء النافذة افتراضياً */
-            position: absolute;
-            right: 0;
-            top: 50px;
-            background: rgba(26, 26, 46, 0.95);
-            backdrop-filter: blur(10px);
-            min-width: 180px;
-            box-shadow: 0px 8px 20px rgba(0,0,0,0.6);
-            border-radius: 12px;
-            z-index: 1000;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        .dropdown-content a {
-            color: white;
-            padding: 12px 15px;
-            text-decoration: none;
-            display: block;
-            font-size: 14px;
-            transition: 0.3s;
-            text-align: right;
-        }
-        .dropdown-content a:hover { 
-            background-color: rgba(6, 182, 212, 0.2); 
-            color: #06b6d4;
-            padding-right: 20px; /* حركة خفيفة عند تمرير الماوس */
-        }
-        /* كلاس الإظهار الذي يتم تفعيله بالجافاسكربت */
+        .dropdown-content { display: none; position: absolute; right: 0; top: 50px; background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); min-width: 180px; box-shadow: 0px 8px 20px rgba(0,0,0,0.6); border-radius: 12px; z-index: 1000; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
+        .dropdown-content a { color: white; padding: 12px 15px; text-decoration: none; display: block; font-size: 14px; transition: 0.3s; text-align: right; }
+        .dropdown-content a:hover { background-color: rgba(6, 182, 212, 0.2); color: #06b6d4; padding-right: 20px; }
         .show { display: block; }
         
-        body {
-            font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh;
-            background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%);
-            background-size: cover; background-attachment: fixed; display: flex; flex-direction: column;
-            color: white;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; min-height: 100vh; background-image: radial-gradient(at 80% 20%, #06b6d4 0px, transparent 50%), radial-gradient(at 20% 80%, #d946ef 0px, transparent 50%), radial-gradient(at 50% 40%, #6366f1 0px, transparent 60%), linear-gradient(135deg, #0b071e 0%, #1a103c 100%); background-size: cover; background-attachment: fixed; display: flex; flex-direction: column; color: white; }
 
-        .navbar {
-            position: sticky; top: 15px; background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px;
-            border-radius: 16px; display: flex; justify-content: space-between;
-            align-items: center; max-width: 1400px; margin: 0 auto 40px; width: 100%; box-sizing: border-box; z-index: 100;
-        }
-        .navbar-brand {
-            font-size: 24px; font-weight: bold; text-decoration: none;
-            background: linear-gradient(45deg, #06b6d4, #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .nav-links a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 16px; }
-
-        .cart-wrapper {
-            max-width: 1400px; margin: 0 auto; width: 100%; display: flex; gap: 30px; flex-wrap: wrap; flex: 1; box-sizing: border-box;
-        }
+        .navbar { position: sticky; top: 15px; background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 40px; width: 100%; box-sizing: border-box; z-index: 100; }
+        .navbar-brand { font-size: 24px; font-weight: bold; text-decoration: none; background: linear-gradient(45deg, #06b6d4, #d946ef); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .cart-wrapper { max-width: 1400px; margin: 0 auto; width: 100%; display: flex; gap: 30px; flex-wrap: wrap; flex: 1; box-sizing: border-box; }
         .cart-table-container { flex: 2; min-width: 300px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
         .cart-table { width: 100%; border-collapse: collapse; text-align: right; }
         .cart-table th, .cart-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .cart-table th { color: #06b6d4; font-weight: bold; }
         
-        .cart-summary {
-            flex: 1; min-width: 300px; background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); height: fit-content;
-        }
-        
-        /* جعل اللون الافتراضي للإجمالي أبيض في الوضع المظلم */
+        .cart-summary { flex: 1; min-width: 300px; background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); height: fit-content; }
         .total-price { color: white; font-size: 24px; font-weight: bold; margin: 20px 0; }
-        .total-price span { color: white; }
-        
-        .btn-checkout { background: linear-gradient(90deg, #7c3aed, #4f46e5); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        .btn-checkout:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4); }
+        .btn-checkout { background: linear-gradient(90deg, #7c3aed, #4f46e5); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; transition: 0.3s; text-decoration: none; display: block; text-align: center; }
         .btn-remove { color: #ef4444; text-decoration: none; font-size: 14px; }
-        .btn-remove:hover { text-decoration: underline; }
 
-        footer { margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding: 25px; text-align: center; font-size: 14px; color: rgba(255,255,255,0.5); }
-        footer a { color: #06b6d4; text-decoration: none; margin: 0 10px; }
-
-        /* ==================== ألوان الوضع المضيء لصفحة السلة ==================== */
-        body.light-mode {
-            background-image: radial-gradient(at 80% 20%, rgba(6, 182, 212, 0.1) 0px, transparent 50%), radial-gradient(at 20% 80%, rgba(217, 70, 239, 0.1) 0px, transparent 50%), linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            color: #1e293b;
-        }
-        body.light-mode .navbar { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.08); }
-        body.light-mode .navbar-brand { background: linear-gradient(45deg, #0891b2, #c026d3); -webkit-background-clip: text; }
-        body.light-mode .nav-links a { color: #334155; }
-        body.light-mode .username-text { color: #334155 !important; } /* تعديل لون اسم المستخدم */
-        body.light-mode #theme-toggle { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #334155; }
-        body.light-mode footer { color: #64748b; border-top-color: rgba(0,0,0,0.08); }
-        
-        body.light-mode .cart-table-container, 
-        body.light-mode .cart-summary { 
-            background: #ffffff !important; 
-            color: #0f172a !important; 
-            border: 1px solid rgba(0, 0, 0, 0.06) !important; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
-        }
-        body.light-mode .cart-table th { color: #0891b2 !important; }
-        body.light-mode .cart-table td { border-bottom: 1px solid #e2e8f0 !important; }
-        
-        /* تعديل اللون ليصبح أسود تماماً للإجمالي والأرقام في الوضع المضيء */
-        body.light-mode .total-price,
-        body.light-mode .total-price span { color: #000000 !important; }
+        body.light-mode { background-image: radial-gradient(at 80% 20%, rgba(6, 182, 212, 0.1) 0px, transparent 50%), radial-gradient(at 20% 80%, rgba(217, 70, 239, 0.1) 0px, transparent 50%), linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); color: #1e293b; }
+        body.light-mode .cart-table-container, body.light-mode .cart-summary { background: #ffffff !important; color: #0f172a !important; }
+        body.light-mode .total-price { color: #000000 !important; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="/" class="navbar-brand" style="color: #000000; text-shadow: 0 0 0px #6c0d7a, 0 0 0px #6a007a; text-decoration: none; font-weight: bold; font-size: 24px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; font-family: 'Arial', sans-serif;">
-            <span>🌳</span> <span>CREST</span>
-        </a>
-        <div class="nav-links" style="display: flex; align-items: center; gap: 15px;">
-        
-            <button id="theme-toggle" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 16px; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
-                🌙
-            </button>
-
-            <a href="{% url 'cart_detail' %}" style="background: rgba(6, 182, 212, 0.15); border: 1px solid #06b6d4; padding: 8px 16px; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 8px; color: #06b6d4; font-weight: bold;">
-                🛒 السلة 
-                <span style="background: #d946ef; color: white; border-radius: 50%; padding: 2px 8px; font-size: 13px;">
-                    {{ request.session.cart.keys|length|default:0 }}
-                </span>
-            </a>
-
+        <a href="/" class="navbar-brand">🌳 CREST</a>
+        <div class="nav-links">
+            <button id="theme-toggle" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer;">🌙</button>
+            <a href="{% url 'cart_detail' %}">🛒 السلة</a>
             {% if user.is_authenticated %}
-                <div style="position: relative; display: inline-block;">
-                    <span class="username-text" onclick="toggleMenu()" style="font-weight: bold; cursor: pointer; padding: 10px;">
-                        {{ user.username }} 
-                    </span>
-                    <div id="userDropdown" class="dropdown-content">
-                        <a href="{% url 'profile' %}">عرض الملف الشخصي</a>
-                        <form action="{% url 'logout' %}" method="post" style="margin: 0; padding: 0;">
-                            {% csrf_token %}
-                          <button type="submit" style="background: none; border: none; color: #ff4757; width: 100%; text-align: right; padding: 12px 15px; cursor: pointer; font-size: 14px; font-family: inherit;">
-                                تسجيل الخروج
-                           </button>
-                        </form>
-                    </div>
+                <span class="username-text" onclick="toggleMenu()">{{ user.username }}</span>
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="{% url 'profile' %}">الملف الشخصي</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" style="background:none; border:none; color:red; padding:12px; width:100%; text-align:right; cursor:pointer;">خروج</button>
+                    </form>
                 </div>
-            {% else %}
-                <a href="{% url 'login' %}" style="color: white; text-decoration: none; font-size: 14px;">تسجيل الدخول</a>
-                <a href="{% url 'register' %}" style="color: #0b82f1; text-decoration: none; font-size: 14px;">إنشاء حساب</a>
             {% endif %}
-
         </div>
     </nav>
 
     <div class="cart-wrapper">
         <div class="cart-table-container">
-            <h2>سلة المشتريات الخاصة بك</h2>
+            <h2>سلة المشتريات</h2>
             <table class="cart-table">
                 <thead>
                     <tr>
@@ -178,12 +73,19 @@
                     <tr>
                         <td><strong>{{ item.product.name }}</strong></td>
                         <td>{{ item.product.price }} د.ج</td>
-                        <td>{{ item.quantity }}</td>
+                        <td>
+                            <form action="{% url 'update_cart' item.product.id %}" method="POST" style="display: inline-flex; align-items: center; gap: 10px;">
+                                {% csrf_token %}
+                                <button type="submit" name="action" value="decrease">-</button>
+                                <span>{{ item.quantity }}</span>
+                                <button type="submit" name="action" value="increase">+</button>
+                            </form>
+                        </td>
                         <td><a href="{% url 'remove_from_cart' item.product.id %}" class="btn-remove">حذف</a></td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.5);">السلة فارغة حالياً.</td>
+                        <td colspan="4" style="text-align: center; padding: 30px;">السلة فارغة.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -192,64 +94,22 @@
 
         <div class="cart-summary">
             <h3>ملخص الطلب</h3>
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-            <p>إجمالي المنتجات: <span style="float: left;">{{ cart_items|length }}</span></p>
-            
             <div class="total-price">
-                الإجمالي الكلي: <span style="float: left;">{{ total_price }} د.ج</span>
+                الإجمالي الكلي: <span>{{ total_price }} د.ج</span>
             </div>
-            
-            <a href="{% url 'checkout' %}" class="btn-checkout" style="text-decoration: none; display: block; text-align: center; box-sizing: border-box;">
-                💳 الانتقال للدفع المباشر
-            </a>
+            <a href="{% url 'checkout' %}" class="btn-checkout">💳 الانتقال للدفع</a>
         </div>
     </div>
 
-    <footer>
-        <p>© 2026  CREST. جميع الحقوق محفوظة.</p>
-    </footer>
-
     <script>
-    // كود القائمة المنسدلة (Dropdown)
-    function toggleMenu() {
-        const dropdown = document.getElementById("userDropdown");
-        if (dropdown) {
-            dropdown.classList.toggle("show");
-        }
-    }
-
-    // إغلاق القائمة عند الضغط في أي مكان
-    window.onclick = function(event) {
-        if (!event.target.matches('.username-text')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
-        }
-    }
-
-    // كود التبديل بين الوضعين
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    if (themeToggleBtn) {
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-mode');
-            themeToggleBtn.innerText = '☀️';
-        }
-
+        function toggleMenu() { document.getElementById("userDropdown").classList.toggle("show"); }
+        window.onclick = function(event) { if (!event.target.matches('.username-text')) { document.getElementById("userDropdown").classList.remove('show'); } }
+        
+        const themeToggleBtn = document.getElementById('theme-toggle');
         themeToggleBtn.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
-            if (document.body.classList.contains('light-mode')) {
-                localStorage.setItem('theme', 'light');
-                themeToggleBtn.innerText = '☀️';
-            } else {
-                localStorage.setItem('theme', 'dark');
-                themeToggleBtn.innerText = '🌙';
-            }
+            themeToggleBtn.innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
         });
-    }
-</script>
+    </script>
 </body>
 </html>

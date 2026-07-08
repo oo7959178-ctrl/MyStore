@@ -8,6 +8,7 @@ from django.contrib.auth import login
 from .models import Order, Product, Category
 
 # --- 1. الحسابات والمستخدمين ---
+# (تم الاحتفاظ بها كما هي في كودك الأصلي)
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -27,7 +28,6 @@ def profile(request):
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-id')
     return render(request, 'my_orders.html', {'orders': orders})
-
 
 # --- 2. المتجر والرئيسية وتفاصيل المنتجات ---
 def home(request):
@@ -58,20 +58,48 @@ def product_detail(request, product_id):
     }
     return render(request, 'store/product_detail.html', context)
 
-
-# --- 3. نظام سلة التسوق ---
+# --- 3. نظام سلة التسوق (تم التحديث) ---
 def add_to_cart(request, product_id):
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
-    
+    product = get_object_or_404(Product, id=product_id)
+
+    # التحقق من المخزون قبل الإضافة لأول مرة
     if product_id_str in cart:
-        cart[product_id_str] += 1
+        if cart[product_id_str] < product.stock:
+            cart[product_id_str] += 1
     else:
-        cart[product_id_str] = 1
+        if product.stock > 0:
+            cart[product_id_str] = 1
+        else:
+            messages.error(request, "هذا المنتج غير متوفر حالياً.")
+            return redirect('home')
         
     request.session['cart'] = cart
     return redirect('cart_detail')
 
+def update_cart(request, product_id):
+    """دالة جديدة لتحديث الكمية من السلة"""
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        product_id_str = str(product_id)
+        product = get_object_or_404(Product, id=product_id)
+        action = request.POST.get('action')
+
+        if product_id_str in cart:
+            if action == 'increase':
+                # لا تزد الكمية إذا تجاوزت المخزون
+                if cart[product_id_str] < product.stock:
+                    cart[product_id_str] += 1
+                else:
+                    messages.warning(request, "لا توجد كمية كافية في المخزون!")
+            elif action == 'decrease':
+                cart[product_id_str] -= 1
+                if cart[product_id_str] <= 0:
+                    del cart[product_id_str]
+            
+            request.session['cart'] = cart
+    return redirect('cart_detail')
 
 def cart_detail(request):
     cart = request.session.get('cart', {})
@@ -97,19 +125,16 @@ def cart_detail(request):
     }
     return render(request, 'store/cart.html', context)
 
-
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
-    
     if product_id_str in cart:
         del cart[product_id_str]
         request.session['cart'] = cart
-        
     return redirect('cart_detail')
 
-
-# --- 4. معالجة وتوجيه طرق الدفع ---
+# --- 4. الدفع وبقية الدوال ---
+# (بقية الدوال تبقى كما هي)
 def process_payment(request):
     if request.method == 'POST':
         method = request.POST.get('payment_method')
@@ -117,79 +142,58 @@ def process_payment(request):
             return redirect('ccp_checkout')
         elif method == 'cod':
             return redirect('cod_checkout') 
-            
     return JsonResponse({'error': 'طريقة دفع غير صحيحة'}, status=400)
 
-
-# --- 5. بوابة دفع البطاقة الذهبية CCP ---
 @login_required(login_url='login')
 def ccp_checkout(request):
     if request.method == 'POST':
         transaction_id = request.POST.get('transaction_id')
         cart = request.session.get('cart', {})
-
         if not cart:
             messages.error(request, "سلتك فارغة حالياً!")
             return redirect('cart_detail')
-
         if not transaction_id:
             messages.error(request, "الرجاء إدخال رقم العملية لتأكيد الدفع.")
             return render(request, 'ccp_checkout.html')
-        
         Order.objects.create(
             user=request.user,
             status='قيد المراجعة',
             payment_method='ccp',
             transaction_id=transaction_id
         )
-        
         if 'cart' in request.session:
             del request.session['cart']
-            
         messages.success(request, 'تم استلام بيانات تحويل الـ CCP بنجاح وجاري مراجعة طلبك!')
         return redirect('my_orders')
-    
     return render(request, 'ccp_checkout.html')
 
-
-# --- 6. بوابة الدفع عند الاستلام COD ---
 @login_required(login_url='login')
 def cod_checkout(request):
     cart = request.session.get('cart', {})
     if not cart:
         messages.error(request, "سلتك فارغة حالياً!")
         return redirect('cart_detail')
-
     if request.method == 'POST':
-        # 👇 استقبال البيانات الأربعة الجديدة المرسلة من الـ Javascript 👇
         client_name = request.POST.get('name')
         client_phone = request.POST.get('phone')
         client_state = request.POST.get('state')
         client_city = request.POST.get('city')
-
-        # إنشاء الطلب وتخزين البيانات داخله
         Order.objects.create(
             user=request.user,
             status='قيد المراجعة',
             payment_method='cod',
             transaction_id='الدفع عند الاستلام',
-            # 👇 ربط البيانات المستلمة بحقول موديل الـ Order 👇
             client_name=client_name,
             client_phone=client_phone,
             client_state=client_state,
             client_city=client_city
         )
-        
         if 'cart' in request.session:
             del request.session['cart']
-            
         messages.success(request, 'تم تسجيل طلبك بنجاح! سيتم الدفع والتوصيل فوراً.')
         return redirect('my_orders')
-    
     return render(request, 'store/checkout.html')
 
-
-# --- 7. دوال إضافية وصفحات فرعية ---
 @login_required(login_url='login')
 def payment_success(request):
     if 'cart' in request.session:
