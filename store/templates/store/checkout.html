@@ -49,9 +49,9 @@
             transform: scale(1.02);
         }
 
-        /* --- تنسيقات النافذة المنبثقة الجديدة لمعلومات الزبون --- */
+        /* --- تنسيقات النافذة المنبثقة --- */
         .modal-overlay {
-            display: none; /* مخفية افتراضياً */
+            display: none; 
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(11, 7, 30, 0.6);
@@ -76,23 +76,12 @@
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
-        .modal-content h3 { 
-            margin-top: 0; 
-            text-align: center; 
-            color: #06b6d4; 
-            margin-bottom: 20px;
-        }
-        .form-group { 
-            margin-bottom: 15px; 
-        }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-size: 14px; 
-            font-weight: bold;
-            color: #e2e8f0;
-        }
-        .form-group input {
+        .modal-content h3 { margin-top: 0; text-align: center; color: #06b6d4; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; color: #e2e8f0; }
+        
+        /* التنسيق الموحد لـ input و textarea */
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
             border-radius: 8px;
@@ -103,108 +92,65 @@
             box-sizing: border-box;
             outline: none;
             transition: all 0.3s ease;
+            font-family: inherit; /* لضمان تطابق الخط */
         }
-        .form-group input:focus { 
+        .form-group input:focus, .form-group textarea:focus { 
             border-color: #d946ef; 
             box-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
             background: rgba(255,255,255,0.1);
         }
-        .modal-buttons { 
-            display: flex; 
-            gap: 10px; 
-            margin-top: 25px; 
-        }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 25px; }
         .btn-submit-modal {
-            flex: 2; 
-            background: #d946ef; 
-            color: white; 
-            border: none; 
-            padding: 12px;
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 16px;
-            box-shadow: 0 0 10px #d946ef; 
-            transition: all 0.3s;
+            flex: 2; background: #d946ef; color: white; border: none; padding: 12px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;
+            box-shadow: 0 0 10px #d946ef; transition: all 0.3s;
         }
-        .btn-submit-modal:hover { 
-            box-shadow: 0 0 20px #d946ef; 
-            transform: scale(1.02); 
-        }
+        .btn-submit-modal:hover { box-shadow: 0 0 20px #d946ef; transform: scale(1.02); }
         .btn-close-modal {
-            flex: 1; 
-            background: transparent; 
-            color: white; 
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 12px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            transition: all 0.3s;
+            flex: 1; background: transparent; color: white; border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: all 0.3s;
         }
-        .btn-close-modal:hover { 
-            background: rgba(255,255,255,0.1); 
-        }
+        .btn-close-modal:hover { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
     <div class="checkout-container">
-        <a href="/" class="btn-home" style="
-            color: #ffffff;          
-            position: absolute;      
-            top: 50px;               
-            right: 20px;             
-            text-decoration: none;   
-            font-size: 20px;
-        "> العودة للرئيسية</a>
-        
+        <a href="/" style="color: #ffffff; position: absolute; top: 50px; right: 20px; text-decoration: none; font-size: 20px;"> العودة للرئيسية</a>
         <h2 style="text-align: center; margin-top: 20px;">إتمام عملية الدفع</h2>
     </div>
     
-
     <div id="payment-form" style="max-width: 660px; margin: 20px auto 0 auto;">
         <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1);">
             <p style="margin-top: 0;">اختر وسيلة الدفع:</p>
-            
             <label style="display: block; margin-bottom: 30px; cursor: pointer;">
-                <input type="radio" name="payment_method" value="cod" checked> 
-                الدفع عند الاستلام
+                <input type="radio" name="payment_method" value="cod" checked> الدفع عند الاستلام
             </label>
-
-            <button type="button" class="btn-complete" id="submit-btn">
-                إتمام الطلب 🛒
-            </button>
+            <button type="button" class="btn-complete" id="submit-btn">إتمام الطلب 🛒</button>
         </div>
     </div>
 
     <div id="shipping-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>معلومات الشحن والتوصيل</h3>
-            
             <div class="form-group">
                 <label for="client-name">الاسم الكامل:</label>
-                <input type="text" id="client-name" placeholder="أدخل اسمك " required>
-
+                <input type="text" id="client-name" placeholder="أدخل اسمك" required>
             </div>
-            
             <div class="form-group">
                 <label for="client-phone">رقم الهاتف:</label>
                 <input type="tel" id="client-phone" placeholder="مثال: 0555123456" required>
             </div>
-            
             <div class="form-group">
                 <label for="client-state">الولاية:</label>
                 <input type="text" id="client-state" placeholder="أدخل الولاية" required>
             </div>
-            
             <div class="form-group">
                 <label for="client-city">المدينة / البلدية:</label>
                 <input type="text" id="client-city" placeholder="أدخل المدينة أو البلدية" required>
             </div>
-            <!-- في ملف checkout.html، ابحث عن كود خانة المدينة وأضف هذا تحته -->
-             <div class="form-group">
-               <label for="id_note">ملاحظات إضافية:</label>
-               <textarea name="note" id="id_note" class="form-control" placeholder="أدخل ملاحظاتك هنا..."></textarea>
+            <div class="form-group">
+                <label for="id_note">ملاحظات إضافية:</label>
+                <textarea id="id_note" rows="3" placeholder="أدخل ملاحظاتك هنا..."></textarea>
             </div>
             
             <div class="modal-buttons">
@@ -213,81 +159,49 @@
             </div>
         </div>
     </div>
-
 </body>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     const submitBtn = document.getElementById('submit-btn');
     const radioButtons = document.querySelectorAll('input[name="payment_method"]');
-    const stripe = Stripe('pk_test_51TmWq8LMyx04TkRfznukmJhXxMfC5EIUS1d1yg0xfh3qKMxVWj87Zzj0w0KlsK0rjH6fO6j9TrtjjsxH0GDB0xaN00Vi0ayphi'); 
-
-    // عناصر النافذة المنبثقة
     const shippingModal = document.getElementById('shipping-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
     const confirmOrderBtn = document.getElementById('confirm-order-btn');
 
-    // إظهار الزر عند اختيار وسيلة دفع
     radioButtons.forEach((radio) => {
-        radio.addEventListener('change', function() {
-            submitBtn.style.display = 'block';
-        });
+        radio.addEventListener('change', function() { submitBtn.style.display = 'block'; });
     });
 
-    // التحقق التلقائي عند تحميل الصفحة لإظهار الزر فوراً
-    const defaultChecked = document.querySelector('input[name="payment_method"]:checked');
-    if (defaultChecked) {
+    if (document.querySelector('input[name="payment_method"]:checked')) {
         submitBtn.style.display = 'block';
     }
 
-    // إغلاق النافذة عند الضغط على إلغاء
-    closeModalBtn.addEventListener('click', function() {
-        shippingModal.style.display = 'none';
-    });
+    closeModalBtn.addEventListener('click', function() { shippingModal.style.display = 'none'; });
 
-    // المنطق البرمجي عند الضغط على زر إتمام الطلب الرئيسي
     submitBtn.addEventListener('click', function () {
         const selectedRadio = document.querySelector('input[name="payment_method"]:checked');
         if (!selectedRadio) return;
-        
-        const selectedMethod = selectedRadio.value;
-
-        if (selectedMethod === 'stripe') {
-            fetch('/process-payment/', { 
-                method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-                body: new URLSearchParams({ 'payment_method': 'stripe' })
-            })
-            .then(res => res.json())
-            .then(data => data.id ? stripe.redirectToCheckout({ sessionId: data.id }) : alert('Error: ' + data.error));
-        } 
-        else if (selectedMethod === 'ccp') {
-            window.location.href = '/payment-ccp/';
-        } 
-        else if (selectedMethod === 'cod') {
-            // فتح النافذة المنبثقة بدلاً من الإرسال الفوري لطلب المعلومات
+        if (selectedRadio.value === 'cod') {
             shippingModal.style.display = 'flex';
         }
     });
 
-    // المنطق البرمجي عند تأكيد الطلب من داخل النافذة المنبثقة
     confirmOrderBtn.addEventListener('click', function() {
         const name = document.getElementById('client-name').value.trim();
         const phone = document.getElementById('client-phone').value.trim();
         const state = document.getElementById('client-state').value.trim();
         const city = document.getElementById('client-city').value.trim();
+        const note = document.getElementById('id_note').value.trim(); // قراءة الملاحظة
 
-        // التأكد من ملء جميع الحقول
         if (!name || !phone || !state || !city) {
-            alert('الرجاء ملء جميع الخانات المطلوبة للشحن!');
+            alert('الرجاء ملء جميع الخانات المطلوبة!');
             return;
         }
 
-        // تعطيل الزر مؤقتاً لتفادي تكرار الضغط والطلبات المتعددة
         confirmOrderBtn.disabled = true;
         confirmOrderBtn.innerText = 'جاري إرسال طلبك...';
 
-        // إرسال البيانات الأربعة مع وسيلة الدفع للباك إند
         fetch('/checkout/cod/', { 
             method: 'POST',
             headers: { 'X-CSRFToken': '{{ csrf_token }}' },
@@ -296,7 +210,8 @@
                 'name': name,
                 'phone': phone,
                 'state': state,
-                'city': city
+                'city': city,
+                'note': note // إرسال الملاحظة
             })
         })
         .then(res => {
@@ -309,7 +224,7 @@
             }
         })
         .catch(err => {
-            alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة ثانية.');
+            alert('حدث خطأ أثناء إرسال الطلب.');
             confirmOrderBtn.disabled = false;
             confirmOrderBtn.innerText = 'تأكيد وإرسال الطلب 🛒';
         });

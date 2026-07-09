@@ -173,11 +173,15 @@ def cod_checkout(request):
     if not cart:
         messages.error(request, "سلتك فارغة حالياً!")
         return redirect('cart_detail')
+    
     if request.method == 'POST':
         client_name = request.POST.get('name')
         client_phone = request.POST.get('phone')
         client_state = request.POST.get('state')
         client_city = request.POST.get('city')
+        # 1. إضافة سطر لقراءة الملاحظة من الـ POST
+        client_note = request.POST.get('note') 
+        
         Order.objects.create(
             user=request.user,
             status='قيد المراجعة',
@@ -186,14 +190,18 @@ def cod_checkout(request):
             client_name=client_name,
             client_phone=client_phone,
             client_state=client_state,
-            client_city=client_city
+            client_city=client_city,
+            # 2. إضافة حقل الملاحظة هنا ليتم حفظه في قاعدة البيانات
+            note=client_note 
         )
+        
         if 'cart' in request.session:
             del request.session['cart']
+            
         messages.success(request, 'تم تسجيل طلبك بنجاح! سيتم الدفع والتوصيل فوراً.')
         return redirect('my_orders')
+        
     return render(request, 'store/checkout.html')
-
 @login_required(login_url='login')
 def payment_success(request):
     if 'cart' in request.session:
