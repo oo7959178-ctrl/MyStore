@@ -1,29 +1,31 @@
 import requests
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Order # تأكد من أن اسم المودل مطابق لما لديك
+from .models import Order
 
 @receiver(post_save, sender=Order)
 def notify_new_order_telegram(sender, instance, created, **kwargs):
     if created: 
-        # التوكن الخاص بالبوت الذي أنشأته
+        # التوكن الخاص بالبوت
         bot_token = '8991816941:AAG36mMuQqh9VarOcVOw70rLpCDGJSeBf7M'
         
-        # استبدل هذه القيمة بالرقم الذي حصلت عليه من userinfobot
+        # استبدل الرقم هنا بالـ ID الخاص بك
         chat_id = '6497250191'   
 
-        # تجهيز نص الرسالة
+        # تجهيز نص الرسالة باستخدام أسماء الحقول الصحيحة من models.py
         message = f'''
         🚀 طلب جديد تم استلامه!
         
         رقم الطلب: #{instance.id}
-        الاسم: {instance.full_name}
-        رقم الهاتف: {instance.phone}
-        الولاية: {instance.state}
-        المدينة/البلدية: {instance.city}
+        الاسم الكامل: {instance.client_name}
+        رقم الهاتف: {instance.client_phone}
+        الولاية: {instance.client_state}
+        المدينة/البلدية: {instance.client_city}
+        طريقة الدفع: {instance.payment_method}
+        ملاحظات: {instance.note}
         '''
         
-        # إرسال الرسالة عبر API تيليجرام
+        # إرسال الرسالة مع ضبط وقت انتظار (timeout) لمنع تعليق الموقع
         url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
         data = {
             'chat_id': chat_id,
@@ -31,6 +33,7 @@ def notify_new_order_telegram(sender, instance, created, **kwargs):
         }
         
         try:
-            requests.post(url, data=data)
+            # إضافة timeout لضمان عدم توقف المتجر إذا كان سيرفر تيليجرام بطيئاً
+            requests.post(url, data=data, timeout=5)
         except Exception as e:
             print(f"حدث خطأ أثناء إرسال إشعار تيليجرام: {e}")
