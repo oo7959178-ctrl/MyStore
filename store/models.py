@@ -55,6 +55,7 @@ class Order(models.Model):
     client_phone = models.CharField(max_length=50, blank=True, null=True, verbose_name="رقم الهاتف")
     client_state = models.CharField(max_length=100, blank=True, null=True, verbose_name="الولاية")
     client_city = models.CharField(max_length=100, blank=True, null=True, verbose_name="المدينة / البلدية")
+    note = models.TextField(blank=True, null=True) # حقل الملاحظات
 
     def __str__(self):
         return f"طلب #{self.id} - {self.user.username if self.user else 'زائر'}"
