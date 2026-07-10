@@ -12,7 +12,7 @@ def notify_new_order_telegram(sender, instance, created, **kwargs):
         # استبدل الرقم هنا بالـ ID الخاص بك
         chat_id = '6497250191'   
 
-        # تجهيز نص الرسالة باستخدام أسماء الحقول الصحيحة من models.py
+        # تجهيز نص الرسالة
         message = f'''
         🚀 طلب جديد تم استلامه!
         
@@ -21,7 +21,7 @@ def notify_new_order_telegram(sender, instance, created, **kwargs):
         رقم الهاتف: {instance.client_phone}
         الولاية: {instance.client_state}
         المدينة/البلدية: {instance.client_city}
-        طريقة الدفع: {instance.payment_method}
+        طريقة الدفع: {instance.get_payment_method_display()} 
         ملاحظات: {instance.note}
         '''
         
